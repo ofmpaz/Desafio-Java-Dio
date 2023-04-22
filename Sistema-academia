@@ -1,0 +1,120 @@
+import java.util.ArrayList;
+import java.util.List;
+
+// Classe Aluno
+public class Aluno {
+    private String nome;
+    private int idade;
+    private float altura;
+    private float peso;
+    private char sexo;
+
+    public Aluno(String nome, int idade, float altura, float peso, char sexo) {
+        this.nome = nome;
+        this.idade = idade;
+        this.altura = altura;
+        this.peso = peso;
+        this.sexo = sexo;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public int getIdade() {
+        return idade;
+    }
+
+    public float getAltura() {
+        return altura;
+    }
+
+    public float getPeso() {
+        return peso;
+    }
+
+    public char getSexo() {
+        return sexo;
+    }
+}
+
+// Classe Professor
+public class Professor {
+    private String nome;
+    private String telefone;
+    private List<Aluno> alunos;
+
+    public Professor(String nome, String telefone) {
+        this.nome = nome;
+        this.telefone = telefone;
+        this.alunos = new ArrayList<>();
+    }
+
+    public void matricularAluno(Aluno aluno) {
+        this.alunos.add(aluno);
+    }
+
+    public void desmatricularAluno(Aluno aluno) {
+        this.alunos.remove(aluno);
+    }
+
+    public void listarAlunos() {
+        for (Aluno aluno : alunos) {
+            System.out.println("Aluno: " + aluno.getNome() + ", Idade: " + aluno.getIdade() + ", Altura: " + aluno.getAltura() + ", Peso: " + aluno.getPeso() + ", Sexo: " + aluno.getSexo());
+        }
+    }
+}
+
+// Classe Observador (Observer)
+public interface Observador {
+    void notificar(String mensagem);
+}
+
+// Classe Observável (Subject)
+public class Academia {
+    private List<Observador> observadores;
+    private Professor professor;
+
+    public Academia(Professor professor) {
+        this.observadores = new ArrayList<>();
+        this.professor = professor;
+    }
+
+    public void adicionarObservador(Observador observador) {
+        this.observadores.add(observador);
+    }
+
+    public void removerObservador(Observador observador) {
+        this.observadores.remove(observador);
+    }
+
+    public void notificarObservadores(String mensagem) {
+        for (Observador observador : observadores) {
+            observador.notificar(mensagem);
+        }
+    }
+
+    public void matricularAluno(Aluno aluno) {
+        this.professor.matricularAluno(aluno);
+        notificarObservadores("Novo aluno matriculado: " + aluno.getNome());
+    }
+
+    public void desmatricularAluno(Aluno aluno) {
+        this.professor.desmatricularAluno(aluno);
+        notificarObservadores("Aluno desmatriculado: " + aluno.getNome());
+    }
+
+    public void listarAlunos() {
+        this.professor.listarAlunos();
+    }
+}
+
+// Classe Principal
+public class MatriculaAcademia {
+    public static void main(String[] args) {
+        // Criando o professor
+        Professor professor = new Professor("João Silva", "(11) 9999-9999");
+
+        // Criando a academia e adicionando observadores
+        Academia academia = new Academia(professor);
+       
